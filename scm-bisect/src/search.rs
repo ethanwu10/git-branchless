@@ -575,9 +575,6 @@ impl<'a, G: Graph, S: Strategy<G>> SearchIter<'a, G, S> {
 impl<'a, G: Graph, S: Strategy<G>> Iterator for SearchIter<'a, G, S> {
     type Item = Result<G::Node, SearchError<G::Node, G::Error, S::Error>>;
 
-    /// FIXME: Each call to `next` can do O(n) work due to cloning graph
-    /// traversal data structures. (This could be fixed with some form of
-    /// persistent data structures.)
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(state) = self.states.pop_front() {
             debug!(?state, "Popped speculation state");
