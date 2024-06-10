@@ -9,7 +9,6 @@ version = "0.2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-indexmap = "2"
 itertools = "0.13"
 rpds = "~1.0"  # 1.1 produces: `use of unstable library feature 'pointer_byte_offsets'`
 thiserror = "1"

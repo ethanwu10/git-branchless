@@ -5,7 +5,6 @@ use std::cmp::{min, Ordering};
 use std::fmt::Debug;
 use std::hash::Hash;
 
-use indexmap::IndexMap;
 use itertools::Itertools;
 use tracing::instrument;
 
@@ -273,7 +272,7 @@ impl<G: BasicSourceControlGraph> search::Strategy<G> for BasicStrategy {
         &self,
         graph: &G,
         bounds: &search::Bounds<G::Node>,
-        statuses: &IndexMap<G::Node, search::Status>,
+        statuses: &search::NodeMap<G::Node, search::Status>,
     ) -> Result<Vec<G::Node>, G::Error> {
         let search::Bounds {
             success: success_bounds,

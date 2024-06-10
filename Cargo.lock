@@ -2995,7 +2995,6 @@ name = "scm-bisect"
 version = "0.2.0"
 dependencies = [
  "criterion",
- "indexmap 2.2.6",
  "insta",
  "itertools 0.13.0",
  "maplit",

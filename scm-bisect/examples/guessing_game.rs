@@ -3,7 +3,6 @@ use std::convert::Infallible;
 use std::io;
 use std::ops::RangeInclusive;
 
-use indexmap::IndexMap;
 use scm_bisect::search;
 
 type Node = isize;
@@ -38,7 +37,7 @@ impl search::Strategy<Graph> for Strategy {
         &self,
         _graph: &Graph,
         bounds: &search::Bounds<Node>,
-        _statuses: &IndexMap<Node, search::Status>,
+        _statuses: &search::NodeMap<Node, search::Status>,
     ) -> Result<Vec<Node>, Self::Error> {
         let search::Bounds {
             success: success_bounds,

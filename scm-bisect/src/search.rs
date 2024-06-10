@@ -5,11 +5,13 @@ use std::collections::{HashSet, VecDeque};
 use std::fmt::Debug;
 use std::hash::Hash;
 
-use indexmap::IndexMap;
 use tracing::{debug, instrument};
 
 /// A set of nodes.
 pub type NodeSet<Node> = rpds::HashTrieSetSync<Node>;
+
+/// A map from node to value.
+pub type NodeMap<Node, Value> = rpds::HashTrieMapSync<Node, Value>;
 
 /// Extension methods for [`NodeSet`].
 pub trait NodeSetExt {
@@ -216,7 +218,7 @@ pub trait Strategy<G: Graph>: Debug {
         &self,
         graph: &G,
         bounds: &Bounds<G::Node>,
-        statuses: &IndexMap<G::Node, Status>,
+        statuses: &NodeMap<G::Node, Status>,
     ) -> Result<Vec<G::Node>, Self::Error>;
 }
 
@@ -306,7 +308,7 @@ pub enum NotifyError<TNode, TGraphError> {
 #[derive(Clone, Debug)]
 pub struct Search<G: Graph> {
     graph: G,
-    statuses: IndexMap<G::Node, Status>,
+    statuses: NodeMap<G::Node, Status>,
     bounds: Bounds<G::Node>,
 }
 
@@ -450,7 +452,7 @@ impl<G: Graph> Search<G> {
             }
         };
 
-        self.statuses.insert(node, status);
+        self.statuses.insert_mut(node, status);
         self.bounds = bounds;
         Ok(())
     }
@@ -471,7 +473,7 @@ struct SearchState<G: Graph> {
     bounds: Bounds<G::Node>,
 
     /// The results of testing so far.
-    statuses: IndexMap<G::Node, Status>,
+    statuses: NodeMap<G::Node, Status>,
 }
 
 /// An iterator that yields the proposed next nodes to search. This starts with
@@ -538,7 +540,7 @@ impl<'a, G: Graph, S: Strategy<G>> SearchIter<'a, G, S> {
         &mut self,
         node: &G::Node,
         bounds: &Bounds<G::Node>,
-        statuses: &IndexMap<G::Node, Status>,
+        statuses: &NodeMap<G::Node, Status>,
     ) -> Result<[SearchState<G>; 2], SearchError<G::Node, G::Error, S::Error>> {
         let Bounds { success, failure } = bounds;
 
@@ -551,11 +553,7 @@ impl<'a, G: Graph, S: Strategy<G>> SearchIter<'a, G, S> {
                     .add_failure_bound(failure.clone(), node)
                     .map_err(SearchError::Graph)?,
             },
-            statuses: {
-                let mut statuses = statuses.clone();
-                statuses.insert(node.clone(), Status::Failure);
-                statuses
-            },
+            statuses: statuses.insert(node.clone(), Status::Failure),
         };
 
         let speculate_success_state = SearchState {
@@ -567,11 +565,7 @@ impl<'a, G: Graph, S: Strategy<G>> SearchIter<'a, G, S> {
                     .map_err(SearchError::Graph)?,
                 failure: failure.clone(),
             },
-            statuses: {
-                let mut statuses = statuses.clone();
-                statuses.insert(node.clone(), Status::Success);
-                statuses
-            },
+            statuses: statuses.insert(node.clone(), Status::Success),
         };
 
         Ok([speculate_failure_state, speculate_success_state])

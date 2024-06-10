@@ -85,7 +85,6 @@ use std::collections::BTreeSet;
 use std::fmt::{Debug, Formatter};
 use std::hash::Hash;
 
-use indexmap::IndexMap;
 use tracing::instrument;
 
 use crate::search::{self, NodeSet};
@@ -359,7 +358,7 @@ where
         &self,
         graph: &MinimizeGraph<TBaseGraph>,
         bounds: &search::Bounds<Subset<TBaseGraph::Node>>,
-        _statuses: &IndexMap<Subset<TBaseGraph::Node>, search::Status>,
+        _statuses: &search::NodeMap<Subset<TBaseGraph::Node>, search::Status>,
     ) -> Result<Vec<Subset<TBaseGraph::Node>>, Self::Error> {
         let midpoints = match self {
             Strategy::Add => {
