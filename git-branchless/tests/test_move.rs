@@ -6206,15 +6206,10 @@ fn test_move_fixup_added_files() -> eyre::Result<()> {
     git.commit_file("test1", 1)?;
     git.commit_file("test2", 2)?;
 
-    let (stdout, _stderr) = git.run(&[
+    let (stdout, _stderr) = git.branchless(
         "move",
-        "--in-memory",
-        "--fixup",
-        "-x",
-        "HEAD",
-        "-d",
-        "HEAD~",
-    ])?;
+        &["--in-memory", "--fixup", "-x", "HEAD", "-d", "HEAD~"],
+    )?;
 
     insta::assert_snapshot!(stdout, @r###"
     Attempting rebase in-memory...
