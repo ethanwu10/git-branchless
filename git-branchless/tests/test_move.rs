@@ -5685,13 +5685,15 @@ fn test_move_fixup_multiple_disconnected_into_head() -> eyre::Result<()> {
 
     // --in-memory
     {
-        let (stdout, _stderr) = git.run(&[
+        let (stdout, _stderr) = git.branchless(
             "move",
-            "--in-memory",
-            "--fixup",
-            "-x",
-            &format!("{}+{}", test3_oid, test5_oid),
-        ])?;
+            &[
+                "--in-memory",
+                "--fixup",
+                "-x",
+                &format!("{}+{}", test3_oid, test5_oid),
+            ],
+        )?;
         insta::assert_snapshot!(stdout, @r###"
         Attempting rebase in-memory...
         [1/2] Committed as: c21e0d7 update 4 test.txt
@@ -5799,15 +5801,17 @@ fn test_move_fixup_squash_branch() -> eyre::Result<()> {
 
     // --in-memory
     {
-        let (stdout, _stderr) = git.run(&[
+        let (stdout, _stderr) = git.branchless(
             "move",
-            "--in-memory",
-            "--fixup",
-            "-s",
-            &test2_oid.to_string(),
-            "-d",
-            &test1_oid.to_string(),
-        ])?;
+            &[
+                "--in-memory",
+                "--fixup",
+                "-s",
+                &test2_oid.to_string(),
+                "-d",
+                &test1_oid.to_string(),
+            ],
+        )?;
         insta::assert_snapshot!(stdout, @r###"
         Attempting rebase in-memory...
         [1/1] Committed as: c513440 create test.txt
@@ -6098,15 +6102,17 @@ fn test_move_fixup_tree() -> eyre::Result<()> {
     "###);
     // --in-memory
     {
-        let (stdout, _stderr) = git.run(&[
+        let (stdout, _stderr) = git.branchless(
             "move",
-            "--in-memory",
-            "--fixup",
-            "-x",
-            &format!("{}+{}", test2_oid, test6_oid),
-            "-d",
-            "test",
-        ])?;
+            &[
+                "--in-memory",
+                "--fixup",
+                "-x",
+                &format!("{}+{}", test2_oid, test6_oid),
+                "-d",
+                "test",
+            ],
+        )?;
         insta::assert_snapshot!(stdout, @r###"
         Attempting rebase in-memory...
         [1/3] Committed as: 5e6d3e4 update 7 test.txt
