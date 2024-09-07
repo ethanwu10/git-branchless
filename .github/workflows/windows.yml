@@ -34,4 +34,4 @@ jobs:
         run: |
           $env:TEST_GIT='C:\Program Files\Git\cmd\git.exe'
           $env:TEST_GIT_EXEC_PATH='C:\Program Files\Git\cmd'
-          cargo test --examples --tests --workspace
+          cargo test --examples --tests --workspace --no-fail-fast
